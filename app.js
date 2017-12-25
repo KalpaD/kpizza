@@ -12,6 +12,7 @@ winston.add(winston.transports.File, { 'filename': '/Users/kalpasenanayake/Dev/g
 
 var app = express();
 var order = require('./routes/order');
+var customer = require('./routes/customer');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -27,6 +28,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Adding the routers.
 app.use('/api/order', order);
+app.use('/api/customer', customer);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
