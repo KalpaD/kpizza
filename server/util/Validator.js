@@ -10,7 +10,9 @@ const customerSchema = Joi.object().keys({
     paymentMethod: Joi.string().required()
 });
 
-Validator = {
+const isEmptyScheme = Joi.string().min(1).max(30).required();
+
+let self = module.exports = Validator = {
 
     /**
      * Validate the create customr request body parameters for the pre-set
@@ -31,8 +33,25 @@ Validator = {
         } else {
             return errorList;
         }
-    }
+    },
 
+    validateExistance: (value) => {
+        let validateResult = Joi.validate(value, isEmptyScheme);
+        return self.collectError(validateResult);
+    },
+
+    collectError: (validateResult) => {
+        let errorList = [];
+        if (validateResult.error !== null) {
+            _.forEach(validateResult.error.details, function(detail) {
+                winston.info(`detail.message ${detail.message}`);
+                errorList.push(detail.message);
+            });
+            winston.info(`errorList ${errorList}`);
+            return errorList;
+        } else {
+            return errorList;
+        }
+    }
 }
 
-module.exports = Validator;

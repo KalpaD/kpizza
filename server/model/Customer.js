@@ -1,4 +1,6 @@
+const winston = require('winston');
 const CustomerModel = require('../model/db/CustomerModel');
+
 
 const Customer = {
 
@@ -18,10 +20,41 @@ const Customer = {
             paymentMethod: paymentMethod,
             password:password
           });
-
-          newCustomer.save((err) => {
-            if(err) throw err;
+        
+          newCustomer.save((err, customer) => {
+            if (err) throw err;
         });
+
+        return newCustomer.save()
+                .then( (customer) => {
+                    // return the newly created customer id, if everything is ok.
+                    return customer._id;
+                })
+                .catch( (err) => {
+                    throw err;
+                });
+    },
+
+    /**
+     * Get customer from the db by given id.
+     * 
+     * @param {String} id - The id of the customer record.
+     */
+    get: function (id) {
+        return CustomerModel.find({_id: id})
+                .exec()
+                .then( (customer) => {
+                    return customer;
+                })
+                .catch( (err) => {
+                    throw err;
+                });
+        // TODO explain this in a the blog
+        /*CustomerModel.findById({_id: id}, (err, customer) => {
+            if (err) throw err;
+            winston.info(`Fetched customer : ${customer}`);
+            return customer;
+        });*/
     }
 }
 
