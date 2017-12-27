@@ -4,7 +4,12 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var config = require('./db');
 
+// db
+const mongoose = require('mongoose');
+// mpromises has been deprecated hence it is recomanded to use native promises.
+mongoose.Promise = global.Promise;
 // logging
 const winston = require('winston');
 // configure logging
@@ -26,6 +31,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Getting the db connection.
+mongoose.connect(config.getDBConString(), 
+      {useMongoClient: true});
 
 // Adding the routers.
 app.use('/api/order', order);
