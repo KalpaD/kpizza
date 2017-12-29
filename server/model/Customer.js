@@ -55,6 +55,17 @@ const Customer = {
             winston.info(`Fetched customer : ${customer}`);
             return customer;
         });*/
+    },
+
+    getByEmail: function (_email) {
+        return CustomerModel.findOne({email: _email})
+                .exec()
+                .then( (customer) => {
+                    return customer;
+                })
+                .catch( (err) => {
+                    throw err;
+                });
     }
 }
 

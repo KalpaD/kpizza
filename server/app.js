@@ -4,7 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var config = require('./db');
+var config = require('./conf');
 
 // db
 const mongoose = require('mongoose');
@@ -18,7 +18,8 @@ winston.add(winston.transports.File, { 'filename': '/Users/kalpasenanayake/Dev/g
 var app = express();
 var order = require('./routes/order');
 var customer = require('./routes/customer');
-var login = require('./routes/login');
+var authenticate = require('./routes/authenticate');
+var tokenVerify = require('./middleware/tokenVerify');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -37,15 +38,23 @@ mongoose.connect(config.getDBConString(),
       {useMongoClient: true});
 
 // Adding the routers.
+// authentication router.
+app.use('/authenticate', authenticate);
+// JWT verification router.
+app.use('/api', tokenVerify);
 app.use('/api/order', order);
 app.use('/api/customer', customer);
-app.use('/api/login', login);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
+});
+
+app.use(function(err, req, res, next){
+  res.status(400).json(err);
 });
 
 // error handler

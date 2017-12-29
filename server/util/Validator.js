@@ -12,6 +12,11 @@ const customerSchema = Joi.object().keys({
 
 const isEmptyScheme = Joi.string().min(1).max(30).required();
 
+const authenticateScheme = Joi.object().keys({
+    email: Joi.string().email().required(),
+    password: Joi.string().min(1).required(),
+});
+
 let self = module.exports = Validator = {
 
     /**
@@ -37,6 +42,11 @@ let self = module.exports = Validator = {
 
     validateExistance: (value) => {
         let validateResult = Joi.validate(value, isEmptyScheme);
+        return self.collectError(validateResult);
+    },
+
+    validateAuthReq: (body) => {
+        let validateResult = Joi.validate(body, authenticateScheme);
         return self.collectError(validateResult);
     },
 
