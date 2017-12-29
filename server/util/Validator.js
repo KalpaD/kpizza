@@ -17,6 +17,14 @@ const authenticateScheme = Joi.object().keys({
     password: Joi.string().min(1).required(),
 });
 
+const pizzaSchema = Joi.object().keys({
+    type: Joi.string().min(3).max(30).required(),
+    description: Joi.string().min(1).required(),
+    baseType: Joi.string().min(1).required(),
+    topings: Joi.array().items(Joi.string()).min(1).unique()
+    .required()
+});
+
 let self = module.exports = Validator = {
 
     /**
@@ -47,6 +55,11 @@ let self = module.exports = Validator = {
 
     validateAuthReq: (body) => {
         let validateResult = Joi.validate(body, authenticateScheme);
+        return self.collectError(validateResult);
+    },
+
+    validatePizzaReq: (body) => {
+        let validateResult = Joi.validate(body, pizzaSchema);
         return self.collectError(validateResult);
     },
 

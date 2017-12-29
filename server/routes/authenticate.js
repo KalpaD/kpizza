@@ -34,7 +34,7 @@ router.post('/', async (req, res) => {
                         iss:'kpizza'
                     };
                     var token = jwt.sign(payload, config.getJWTSecret(), {
-                        expiresIn: 60 * 5 // 5 min exp time
+                        expiresIn: 60 * 60 // 60 min exp time
                     });
 
                     res.status(200).json({
